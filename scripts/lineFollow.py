@@ -30,7 +30,8 @@ if __name__ == "__main__":
     cs_left.mode='COL-REFLECT'
     cs_right.mode='COL-REFLECT'
 
-    ev3.Sound().speak("It's time to kick gum and chew ass... And I'm all out of ass")
+    #ev3.Sound().speak("It's time to kick gum and chew ass... And I'm all out of ass")
+    ev3.Sound().beep()
 
     while True:
 
