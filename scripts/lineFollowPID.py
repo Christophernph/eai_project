@@ -8,21 +8,21 @@ import sys
 MAX_SPEED = 999
 
 # PID variables
-Kp = 30
-Ki = 1
-Kd = 2
+Kp = 40
+Ki = 2
+Kd = 1
 
-offsetLeft = 48
-offsetRight = 42
-Tp = 500
+offsetLeft = (80 + 7) / 2.0
+offsetRight = (89 + 8) / 2.0
+Tp = -950
 
 integral = 0
 lastError = 0
 derivative = 0
 
 # Devices
-cs_left = ev3.ColorSensor("in1")
-cs_right = ev3.ColorSensor("in4")
+cs_left = ev3.ColorSensor("in2")
+cs_right = ev3.ColorSensor("in3")
 mLeft = ev3.LargeMotor("outA")
 mRight = ev3.LargeMotor("outD")
 
@@ -39,12 +39,13 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
     #signal.pause()
     
-    cs_left.mode='COL-REFLECT'
+    cs_left.mode  = 'COL-REFLECT'
+    cs_right.mode = 'COL-REFLECT'
 
     #ev3.Sound().speak("It's time to kick gum and chew ass... And I'm all out of ass")
     # ev3.Sound().beep()
-    ev3.Sound.play('Undertale  Megalovania.wav')
-    ev3.Sound.set_volume(100)
+    # ev3.Sound.play('Undertale  Megalovania.wav')
+    # ev3.Sound.set_volume(100)
 
     while True:
 
@@ -55,13 +56,13 @@ if __name__ == "__main__":
 
         error = (errorLeft - errorRight) / 2.0
 
-        integral = integral + error
+        integral = 0.99 * integral + error
         derivative = error - lastError
 
         Turn = Kp * error + Ki * integral + Kd * derivative
 
-        left_speed = Tp + Turn
-        right_speed = Tp - Turn
+        left_speed = Tp - Turn
+        right_speed = Tp + Turn
 
         # Saturate speed
         if left_speed > MAX_SPEED:
@@ -76,6 +77,11 @@ if __name__ == "__main__":
         mLeft.stop(stop_action="hold")
         mRight.stop(stop_action="hold")
         # print(lightValueLeft, lightValueRight)
+        
+        
         mLeft.run_forever(speed_sp=left_speed)
         mRight.run_forever(speed_sp=right_speed)
+        
+        # print(errorLeft, errorRight, error)
+        # print(left_speed, right_speed)
         

@@ -5,7 +5,7 @@ import time
 import signal
 import sys
 
-SPEED = 200
+SPEED = -300
 
 mLeft = ev3.LargeMotor("outA")
 mRight = ev3.LargeMotor("outD")
